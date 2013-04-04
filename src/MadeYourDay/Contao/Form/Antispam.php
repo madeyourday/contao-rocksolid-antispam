@@ -15,14 +15,27 @@ namespace MadeYourDay\Contao\Form;
  */
 class Antispam
 {
+	/**
+	 * loadFormField hook
+	 *
+	 * replaces the captcha widget with the invisible antispam widget
+	 *
+	 * @param  \Widget $widget form field widget object
+	 * @param  string  $formId form id
+	 * @param  array   $data   form data
+	 * @param  \Form   $form   form object
+	 * @return \Widget
+	 */
 	public function loadFormField($widget, $formId, $data, $form)
 	{
 		if ($widget instanceof Captcha) {
+
 			$antispamField = new AntispamField(array(
 				'id' => $widget->id,
 				'pid' => $widget->pid,
 				'tableless' => $widget->tableless,
 			));
+
 			if (\Input::post('FORM_SUBMIT') == $formId) {
 				$antispamField->validate();
 			}
@@ -30,7 +43,9 @@ class Antispam
 				// switch to the invisible honeypot field
 				$widget = $antispamField;
 			}
+
 		}
+
 		return $widget;
 	}
 }

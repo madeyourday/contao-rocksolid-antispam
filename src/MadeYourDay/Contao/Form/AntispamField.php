@@ -25,43 +25,57 @@ class AntispamField extends \Widget
 	 */
 	protected $blnForAttribute = true;
 
+	/**
+	 * @var array field names for the antispam fields
+	 */
 	protected $names = array();
 
+	/**
+	 * @var array field values for the antispam fields
+	 */
 	protected $values = array();
 
 	/**
-	 * Initialize the object
-	 * @param array
+	 * constructor
+	 *
+	 * @param array|null $attributes
 	 */
-	public function __construct($arrAttributes=null)
+	public function __construct($attributes = null)
 	{
-		parent::__construct($arrAttributes);
+		parent::__construct($attributes);
 
 		$this->names[0] = 'email';
-		$this->names[1] = 'url';
+		$this->values[0] = '';
 
-		$statement = \Database::getInstance()->prepare(
-			"SELECT name FROM tl_form_field WHERE pid = ?"
-		);
-		$fields = $statement->execute($this->pid);
+		$this->names[1] = 'url';
+		$this->values[1] = '';
+
+		$this->names[2] = static::getRandomString();
+		$this->values[2] = static::getRandomString();
+
+		$fields = \Database::getInstance()
+			->prepare("SELECT name FROM tl_form_field WHERE pid = ?")
+			->execute($this->pid);
+
 		if ($fields) {
+
 			$fields = $fields->fetchEach('name');
+
+			// check if the field name already exists in the form
 			$count = 2;
 			while (in_array($this->names[0], $fields)) {
 				$this->names[0] = 'email-' . $count;
 				$count++;
 			}
+
+			// check if the field name already exists in the form
 			$count = 2;
 			while (in_array($this->names[1], $fields)) {
 				$this->names[1] = 'url-' . $count;
 				$count++;
 			}
-		}
 
-		$this->values[0] = '';
-		$this->values[1] = '';
-		$this->names[2] = static::getRandomString();
-		$this->values[2] = static::getRandomString();
+		}
 	}
 
 	/**
@@ -77,8 +91,7 @@ class AntispamField extends \Widget
 			\Input::post($sessionData['names'][1]) !== $sessionData['values'][1] ||
 			\Input::post($sessionData['names'][2]) !== $sessionData['values'][2] ||
 			$sessionData['time'] > (time() - 3)
-		)
-		{
+		) {
 			$this->addError('failed');
 			$this->Session->set('rocksolid_antispam_' . $this->strId, '');
 		}
@@ -156,6 +169,9 @@ class AntispamField extends \Widget
 		return $html;
 	}
 
+	/**
+	 * stores field names, field values and the current time in the session
+	 */
 	protected function setSessionData()
 	{
 		$this->Session->set('rocksolid_antispam_' . $this->strId, array(
@@ -165,6 +181,11 @@ class AntispamField extends \Widget
 		));
 	}
 
+	/**
+	 * returns a 22 characters long random base 64 [A-Za-z0-9\-_] string
+	 *
+	 * @return string random base64 string
+	 */
 	protected static function getRandomString() {
 		return rtrim(strtr(base64_encode(pack(
 			'n8',
