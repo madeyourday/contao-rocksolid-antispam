@@ -12,6 +12,6 @@
  * @author Martin Auswöger <martin@madeyourday.net>
  */
 
-$GLOBALS['TL_LANG']['FFL']['rocksolid_antispam'][0] = 'Antispam element';
-$GLOBALS['TL_LANG']['FFL']['rocksolid_antispam'][1] = 'A hidden field for spam prevention';
-$GLOBALS['TL_LANG']['FFL']['rocksolid_antispam']['label'] = 'Don\'t fill out this field';
+$GLOBALS['TL_LANG']['FFL']['rocksolid_antispam'][0] = 'Antispam and fallback security question';
+$GLOBALS['TL_LANG']['FFL']['rocksolid_antispam'][1] = 'A hidden field for spam protection. The default security question is used as backup mechanism. The field label describes the security question field and should read something like »Security question«.';
+$GLOBALS['TL_LANG']['FFL']['rocksolid_antispam']['label'] = 'Don\'t fill this field';
