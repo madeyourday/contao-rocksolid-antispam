@@ -1,0 +1,38 @@
+{
+	"name":"madeyourday/contao-rocksolid-antispam",
+	"description":"Protect your site effectively from spam without causing your visitors unnecessary difficulties.",
+	"keywords":["contao","spam","form"],
+	"type":"contao-module",
+	"homepage":"http://rocksolidthemes.com/de/contao/plugins/honeypot-antispam",
+	"license":"MIT",
+	"authors":[
+		{
+			"name":"RockSolid Themes",
+			"homepage":"http://rocksolidthemes.com/de/contao-themes",
+			"role":"Developer"
+		}
+	],
+	"support":{
+		"forum":"http://help.rocksolidthemes.com/discussions",
+		"issues":"https://github.com/madeyourday/contao-rocksolid-antispam/issues",
+		"source":"https://github.com/madeyourday/contao-rocksolid-antispam"
+	},
+	"require":{
+		"php":">=5.3",
+		"contao/core":">=3,<4",
+		"contao-community-alliance/composer-installer":"*"
+	},
+	"autoload":{
+		"classmap":["src/"]
+	},
+	"replace":{
+		"contao-legacy/rocksolid-antispam":"*"
+	},
+	"extra":{
+		"contao":{
+			"sources":{
+				"":"system/modules/rocksolid-antispam"
+			}
+		}
+	}
+}
