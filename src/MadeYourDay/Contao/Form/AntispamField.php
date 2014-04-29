@@ -174,6 +174,10 @@ class AntispamField extends \Widget
 	 */
 	protected function setSessionData()
 	{
+		// Don't update the session for search indexing requests
+		if (\Environment::get('HttpIndexPage')) {
+			return;
+		}
 		$this->Session->set('rocksolid_antispam_' . $this->strId, array(
 			'names' => $this->names,
 			'values' => $this->values,
