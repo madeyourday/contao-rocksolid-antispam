@@ -26,7 +26,7 @@
 		"classmap":["src/"]
 	},
 	"replace":{
-		"contao-legacy/rocksolid-antispam":"*"
+		"contao-legacy/rocksolid-antispam":"self.version"
 	},
 	"extra":{
 		"contao":{
