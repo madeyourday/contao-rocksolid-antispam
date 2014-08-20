@@ -15,4 +15,16 @@ namespace MadeYourDay\Contao\Form;
  */
 class Captcha extends \FormCaptcha
 {
+	public function __get($key)
+	{
+		if (
+			$key === 'type'
+			&& $this->arrConfiguration[$key] === 'rocksolid_antispam'
+		) {
+			// Improves compatibility with other contao extensions
+			return 'captcha';
+		}
+
+		return parent::__get($key);
+	}
 }
