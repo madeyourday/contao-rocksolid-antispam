@@ -1,4 +1,4 @@
-<?php if (! $this->tableless): ?>
+<?php if (! $this->tableless && version_compare(VERSION, '4.0', '<')): ?>
 	<tr style="display: none !important">
 		<td class="col_0 col_first"><?php echo $this->generateLabel() ?></td>
 		<td class="col_1 col_last"><?php echo $this->generateWithError() ?></td>
