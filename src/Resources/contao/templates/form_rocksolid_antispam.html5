@@ -1,4 +1,4 @@
 <div style="display: none !important">
-	<?php echo $this->generateLabel() ?>
-	<?php echo $this->generateWithError() ?>
+	<?= $this->generateLabel() ?>
+	<?= $this->generateWithError() ?>
 </div>
