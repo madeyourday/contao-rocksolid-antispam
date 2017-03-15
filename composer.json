@@ -2,7 +2,7 @@
 	"name":"madeyourday/contao-rocksolid-antispam",
 	"description":"Protect your site effectively from spam without causing your visitors unnecessary difficulties.",
 	"keywords":["contao","spam","form"],
-	"type":"contao-module",
+	"type":"contao-bundle",
 	"homepage":"https://rocksolidthemes.com/de/contao/plugins/honeypot-antispam",
 	"license":"MIT",
 	"authors":[
