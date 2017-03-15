@@ -12,6 +12,6 @@
  * @author Martin Auswöger <martin@madeyourday.net>
  */
 
-$GLOBALS['TL_FFL']['rocksolid_antispam'] = 'MadeYourDay\\Contao\\Form\\Captcha';
+$GLOBALS['TL_FFL']['rocksolid_antispam'] = 'MadeYourDay\\RockSolidAntispam\\Form\\Captcha';
 
-$GLOBALS['TL_HOOKS']['loadFormField'][] = array('MadeYourDay\\Contao\\Form\\Antispam', 'loadFormField');
+$GLOBALS['TL_HOOKS']['loadFormField'][] = array('MadeYourDay\\RockSolidAntispam\\Form\\Antispam', 'loadFormField');

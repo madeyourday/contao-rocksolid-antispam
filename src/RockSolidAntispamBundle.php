@@ -6,7 +6,7 @@
  * file that was distributed with this source code.
  */
 
-namespace MadeYourDay\Contao;
+namespace MadeYourDay\RockSolidAntispam;
 
 use Symfony\Component\HttpKernel\Bundle\Bundle;
 
