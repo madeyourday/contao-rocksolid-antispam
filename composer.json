@@ -27,6 +27,9 @@
 		"contao-legacy/rocksolid-antispam":"self.version"
 	},
 	"extra":{
+		"branch-alias": {
+			"dev-develop": "2.0.x-dev"
+		},
 		"contao":{
 			"sources":{
 				"":"system/modules/rocksolid-antispam"
