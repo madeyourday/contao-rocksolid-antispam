@@ -12,4 +12,4 @@
  * @author Martin Auswöger <martin@madeyourday.net>
  */
 
-$GLOBALS['TL_DCA']['tl_form_field']['palettes']['rocksolid_antispam'] = preg_replace('(\\{submit_legend\\}[^;]+(?:;|$))i', '', $GLOBALS['TL_DCA']['tl_form_field']['palettes']['captcha']);
+$GLOBALS['TL_DCA']['tl_form_field']['palettes']['rocksolid_antispam'] = $GLOBALS['TL_DCA']['tl_form_field']['palettes']['captcha'];

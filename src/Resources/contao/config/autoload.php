@@ -18,10 +18,6 @@ ClassLoader::addClasses(array(
 	'MadeYourDay\\RockSolidAntispam\\Form\\Captcha' => 'system/modules/rocksolid-antispam/src/MadeYourDay/Contao/Form/Captcha.php',
 ));
 
-$templatesFolder = version_compare(VERSION, '4.0', '>=')
-	? 'vendor/madeyourday/contao-rocksolid-antispam/templates'
-	: 'system/modules/rocksolid-antispam/templates';
-
 TemplateLoader::addFiles(array(
-	'form_rocksolid_antispam' => $templatesFolder,
+	'form_rocksolid_antispam' => 'vendor/madeyourday/contao-rocksolid-antispam/templates',
 ));
