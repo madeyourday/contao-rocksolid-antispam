@@ -83,7 +83,8 @@ class AntispamField extends \Widget
 	 */
 	public function validate()
 	{
-		$sessionData = $this->Session->get('rocksolid_antispam_' . $this->strId);
+		$session = \System::getContainer()->get('session')->getBag('contao_frontend');
+		$sessionData = $session->get('rocksolid_antispam_' . $this->strId);
 
 		if (
 			! is_array($sessionData) ||
@@ -93,7 +94,7 @@ class AntispamField extends \Widget
 			$sessionData['time'] > (time() - 3)
 		) {
 			$this->addError('failed');
-			$this->Session->set('rocksolid_antispam_' . $this->strId, '');
+			$session->set('rocksolid_antispam_' . $this->strId, '');
 		}
 	}
 
@@ -122,7 +123,7 @@ class AntispamField extends \Widget
 			$this->names[0],
 			'ctrl_' . $this->strId,
 			trim('rsas-field ' . $this->strClass),
-			specialchars($this->values[0]),
+			\StringUtil::specialchars($this->values[0]),
 			$this->getAttributes(),
 			$this->strTagEnding
 		);
@@ -138,7 +139,7 @@ class AntispamField extends \Widget
 			$this->names[1],
 			'ctrl_' . $this->strId . '_2',
 			trim('rsas-field ' . $this->strClass),
-			specialchars($this->values[1]),
+			\StringUtil::specialchars($this->values[1]),
 			$this->getAttributes(),
 			$this->strTagEnding
 		);
@@ -155,7 +156,7 @@ class AntispamField extends \Widget
 			$this->values[2],
 			'ctrl_' . $this->strId . '_3',
 			trim('rsas-field ' . $this->strClass),
-			specialchars($this->names[2]),
+			\StringUtil::specialchars($this->names[2]),
 			$this->getAttributes(),
 			$this->strTagEnding
 		);
@@ -174,15 +175,15 @@ class AntispamField extends \Widget
 	 */
 	protected function setSessionData()
 	{
-		// Don't update the session for search indexing requests
-		if (\Environment::get('HttpIndexPage')) {
-			return;
-		}
-		$this->Session->set('rocksolid_antispam_' . $this->strId, array(
-			'names' => $this->names,
-			'values' => $this->values,
-			'time' => time(),
-		));
+		\System::getContainer()
+			->get('session')
+			->getBag('contao_frontend')
+			->set('rocksolid_antispam_' . $this->strId, array(
+				'names' => $this->names,
+				'values' => $this->values,
+				'time' => time(),
+			))
+		;
 	}
 
 	/**
