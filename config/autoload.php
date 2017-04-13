@@ -16,6 +16,7 @@ ClassLoader::addClasses(array(
 	'MadeYourDay\\Contao\\Form\\Antispam' => 'system/modules/rocksolid-antispam/src/MadeYourDay/Contao/Form/Antispam.php',
 	'MadeYourDay\\Contao\\Form\\AntispamField' => 'system/modules/rocksolid-antispam/src/MadeYourDay/Contao/Form/AntispamField.php',
 	'MadeYourDay\\Contao\\Form\\Captcha' => 'system/modules/rocksolid-antispam/src/MadeYourDay/Contao/Form/Captcha.php',
+	'MadeYourDay\\Contao\\Form\\CaptchaReplacement' => 'system/modules/rocksolid-antispam/src/MadeYourDay/Contao/Form/CaptchaReplacement.php',
 ));
 
 $templatesFolder = version_compare(VERSION, '4.0', '>=')

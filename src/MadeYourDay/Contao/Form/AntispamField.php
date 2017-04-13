@@ -53,6 +53,12 @@ class AntispamField extends \Widget
 		$this->names[2] = static::getRandomString();
 		$this->values[2] = static::getRandomString();
 
+		// Improve compatibility with comments form
+		if (!$this->pid) {
+			$this->names[0] = 'e-mail';
+			return;
+		}
+
 		$fields = \Database::getInstance()
 			->prepare("SELECT name FROM tl_form_field WHERE pid = ?")
 			->execute($this->pid);
