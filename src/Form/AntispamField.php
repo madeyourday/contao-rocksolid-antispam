@@ -8,6 +8,9 @@
 
 namespace MadeYourDay\RockSolidAntispam\Form;
 
+use Contao\Form;
+use Contao\FormModel;
+
 /**
  * Antispam field
  *
@@ -34,6 +37,10 @@ class AntispamField extends \Widget
 	 * @var array field values for the antispam fields
 	 */
 	protected $values = array();
+	/**
+	 * @var bool|int|object|string|null
+	 */
+	private $uniqueId;
 
 	/**
 	 * constructor
@@ -43,6 +50,8 @@ class AntispamField extends \Widget
 	public function __construct($attributes = null)
 	{
 		parent::__construct($attributes);
+
+		$this->uniqueId = uniqid();
 
 		$this->names[0] = 'email';
 		$this->values[0] = '';
@@ -84,7 +93,7 @@ class AntispamField extends \Widget
 	public function validate()
 	{
 		$session = \System::getContainer()->get('session')->getBag('contao_frontend');
-		$sessionData = $session->get('rocksolid_antispam_' . $this->strId);
+		$sessionData = $session->get('rocksolid_antispam_' . \Input::post('rsas_uniqueid'));
 
 		if (
 			! is_array($sessionData) ||
@@ -93,8 +102,9 @@ class AntispamField extends \Widget
 			\Input::post($sessionData['names'][2]) !== $sessionData['values'][2] ||
 			$sessionData['time'] > (time() - 3)
 		) {
+
 			$this->addError('failed');
-			$session->set('rocksolid_antispam_' . $this->strId, '');
+			$session->set('rocksolid_antispam_' . $this->uniqueId, '');
 		}
 	}
 
@@ -116,12 +126,14 @@ class AntispamField extends \Widget
 	 */
 	public function generate()
 	{
-		$this->setSessionData();
+
+
+		$this->setSessionData(); 
 
 		$html = sprintf(
 			'<input type="text" name="%s" id="%s" class="%s" value="%s"%s%s',
 			$this->names[0],
-			'ctrl_' . $this->strId,
+			'ctrl_' . $this->uniqueId,
 			trim('rsas-field ' . $this->strClass),
 			\StringUtil::specialchars($this->values[0]),
 			$this->getAttributes(),
@@ -129,15 +141,19 @@ class AntispamField extends \Widget
 		);
 
 		$html .= str_replace(
-			'"ctrl_' . $this->strId . '"',
-			'"ctrl_' . $this->strId . '_2"',
+			'"ctrl_' . $this->uniqueId . '"',
+			'"ctrl_' . $this->uniqueId . '_2"',
 			$this->generateLabel()
 		);
 
 		$html .= sprintf(
+			'<input type="text" name="rsas_uniqueid" value="%s"></input>',
+			$this->uniqueId);
+
+		$html .= sprintf(
 			'<input type="text" name="%s" id="%s" class="%s" value="%s"%s%s',
 			$this->names[1],
-			'ctrl_' . $this->strId . '_2',
+			'ctrl_' . $this->uniqueId . '_2',
 			trim('rsas-field ' . $this->strClass),
 			\StringUtil::specialchars($this->values[1]),
 			$this->getAttributes(),
@@ -145,8 +161,8 @@ class AntispamField extends \Widget
 		);
 
 		$html .= str_replace(
-			'"ctrl_' . $this->strId . '"',
-			'"ctrl_' . $this->strId . '_3"',
+			'"ctrl_' . $this->uniqueId . '"',
+			'"ctrl_' . $this->uniqueId . '_3"',
 			$this->generateLabel()
 		);
 
@@ -154,21 +170,21 @@ class AntispamField extends \Widget
 		$html .= sprintf(
 			'<input type="text" name="%s" id="%s" class="%s" value="%s"%s%s',
 			$this->values[2],
-			'ctrl_' . $this->strId . '_3',
+			'ctrl_' . $this->uniqueId . '_3',
 			trim('rsas-field ' . $this->strClass),
 			\StringUtil::specialchars($this->names[2]),
 			$this->getAttributes(),
 			$this->strTagEnding
 		);
 		$html .= '<script>(function(){' .
-			'var a=document.getElementById(\'ctrl_' . $this->strId . '_3\'),' .
+			'var a=document.getElementById(\'ctrl_' . $this->uniqueId . '_3\'),' .
 			'b=a.value;' .
 			'a.value=a.name;' .
 			'a.name=b' .
 			'})()</script>';
 
 		return $html;
-	}
+	} 
 
 	/**
 	 * stores field names, field values and the current time in the session
@@ -178,7 +194,7 @@ class AntispamField extends \Widget
 		\System::getContainer()
 			->get('session')
 			->getBag('contao_frontend')
-			->set('rocksolid_antispam_' . $this->strId, array(
+			->set('rocksolid_antispam_' . $this->uniqueId, array(
 				'names' => $this->names,
 				'values' => $this->values,
 				'time' => time(),
