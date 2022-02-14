@@ -8,9 +8,6 @@
 
 namespace MadeYourDay\RockSolidAntispam\Form;
 
-use Contao\Form;
-use Contao\FormModel;
-
 /**
  * Antispam field
  *
