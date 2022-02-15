@@ -34,6 +34,10 @@ class AntispamField extends \Widget
 	 * @var array field values for the antispam fields
 	 */
 	protected $values = array();
+	/**
+	 * @var bool|int|object|string|null
+	 */
+	private $uniqueId;
 
 	/**
 	 * constructor
@@ -50,8 +54,8 @@ class AntispamField extends \Widget
 		$this->names[1] = 'url';
 		$this->values[1] = '';
 
-		$this->names[2] = static::getRandomString();
-		$this->values[2] = static::getRandomString();
+		$this->names[2] = 'n--' . static::getRandomString();
+		$this->values[2] = 'v--' . static::getRandomString();
 
 		$fields = \Database::getInstance()
 			->prepare("SELECT name FROM tl_form_field WHERE pid = ?")
@@ -84,17 +88,18 @@ class AntispamField extends \Widget
 	public function validate()
 	{
 		$session = \System::getContainer()->get('session')->getBag('contao_frontend');
-		$sessionData = $session->get('rocksolid_antispam_' . $this->strId);
+		$sessionData = $session->get('rocksolid_antispam_' . \Input::post('rsas_uniqueid'));
 
-		if (
-			! is_array($sessionData) ||
+		$isInvalid = !is_array($sessionData) ||
 			\Input::post($sessionData['names'][0]) !== $sessionData['values'][0] ||
 			\Input::post($sessionData['names'][1]) !== $sessionData['values'][1] ||
 			\Input::post($sessionData['names'][2]) !== $sessionData['values'][2] ||
-			$sessionData['time'] > (time() - 3)
-		) {
+			$sessionData['time'] > (time() - 3);
+
+		if ($isInvalid) {
+
 			$this->addError('failed');
-			$session->set('rocksolid_antispam_' . $this->strId, '');
+			$session->set('rocksolid_antispam_' . $this->uniqueId, '');
 		}
 	}
 
@@ -116,12 +121,14 @@ class AntispamField extends \Widget
 	 */
 	public function generate()
 	{
+		$this->uniqueId = uniqid();
+
 		$this->setSessionData();
 
 		$html = sprintf(
 			'<input type="text" name="%s" id="%s" class="%s" value="%s"%s%s',
 			$this->names[0],
-			'ctrl_' . $this->strId,
+			'ctrl_' . $this->uniqueId,
 			trim('rsas-field ' . $this->strClass),
 			\StringUtil::specialchars($this->values[0]),
 			$this->getAttributes(),
@@ -129,15 +136,19 @@ class AntispamField extends \Widget
 		);
 
 		$html .= str_replace(
-			'"ctrl_' . $this->strId . '"',
-			'"ctrl_' . $this->strId . '_2"',
+			'"ctrl_' . $this->uniqueId . '"',
+			'"ctrl_' . $this->uniqueId . '_2"',
 			$this->generateLabel()
 		);
 
 		$html .= sprintf(
+			'<input type="text" name="rsas_uniqueid" value="%s"></input>',
+			$this->uniqueId);
+
+		$html .= sprintf(
 			'<input type="text" name="%s" id="%s" class="%s" value="%s"%s%s',
 			$this->names[1],
-			'ctrl_' . $this->strId . '_2',
+			'ctrl_' . $this->uniqueId . '_2',
 			trim('rsas-field ' . $this->strClass),
 			\StringUtil::specialchars($this->values[1]),
 			$this->getAttributes(),
@@ -145,8 +156,8 @@ class AntispamField extends \Widget
 		);
 
 		$html .= str_replace(
-			'"ctrl_' . $this->strId . '"',
-			'"ctrl_' . $this->strId . '_3"',
+			'"ctrl_' . $this->uniqueId . '"',
+			'"ctrl_' . $this->uniqueId . '_3"',
 			$this->generateLabel()
 		);
 
@@ -154,18 +165,33 @@ class AntispamField extends \Widget
 		$html .= sprintf(
 			'<input type="text" name="%s" id="%s" class="%s" value="%s"%s%s',
 			$this->values[2],
-			'ctrl_' . $this->strId . '_3',
+			'ctrl_' . $this->uniqueId . '_3',
 			trim('rsas-field ' . $this->strClass),
 			\StringUtil::specialchars($this->names[2]),
 			$this->getAttributes(),
 			$this->strTagEnding
 		);
-		$html .= '<script>(function(){' .
-			'var a=document.getElementById(\'ctrl_' . $this->strId . '_3\'),' .
-			'b=a.value;' .
-			'a.value=a.name;' .
-			'a.name=b' .
-			'})()</script>';
+
+
+		$html .= '<script>$(document).ready(function(){
+    				var a=document.querySelectorAll(\'#ctrl_' . $this->uniqueId . '_3:not(.swapped)\');
+    				
+    				if(a.length == 1){
+    				    var b=a.value;
+    				    a.value=a.name;
+    				    a.name=b;
+    				}
+                    if(a.length > 1){
+                        a.forEach(function(field){
+							var b=field.value;
+    				    	field.value=field.name;
+    				    	field.name=b; 
+                            field.classList.add(\'swapped\')
+                            console.log(field.name);
+                        });
+                    }
+				});</script>';
+
 
 		return $html;
 	}
@@ -178,12 +204,11 @@ class AntispamField extends \Widget
 		\System::getContainer()
 			->get('session')
 			->getBag('contao_frontend')
-			->set('rocksolid_antispam_' . $this->strId, array(
+			->set('rocksolid_antispam_' . $this->uniqueId, array(
 				'names' => $this->names,
 				'values' => $this->values,
 				'time' => time(),
-			))
-		;
+			));
 	}
 
 	/**
@@ -191,17 +216,18 @@ class AntispamField extends \Widget
 	 *
 	 * @return string random base64 string
 	 */
-	protected static function getRandomString() {
+	protected static function getRandomString()
+	{
 		return rtrim(strtr(base64_encode(pack(
 			'n8',
-			mt_rand(0,65535),
-			mt_rand(0,65535),
-			mt_rand(0,65535),
-			mt_rand(0,65535),
-			mt_rand(0,65535),
-			mt_rand(0,65535),
-			mt_rand(0,65535),
-			mt_rand(0,65535)
+			mt_rand(0, 65535),
+			mt_rand(0, 65535),
+			mt_rand(0, 65535),
+			mt_rand(0, 65535),
+			mt_rand(0, 65535),
+			mt_rand(0, 65535),
+			mt_rand(0, 65535),
+			mt_rand(0, 65535)
 		)), '+/', '-_'), '=');
 	}
 }
