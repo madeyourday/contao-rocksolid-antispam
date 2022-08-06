@@ -8,6 +8,10 @@
 
 namespace MadeYourDay\RockSolidAntispam\Form;
 
+use Contao\Form;
+use Contao\Input;
+use Contao\Widget;
+
 /**
  * Antispam hooks
  *
@@ -20,11 +24,11 @@ class Antispam
 	 *
 	 * replaces the captcha widget with the invisible antispam widget
 	 *
-	 * @param  \Widget $widget form field widget object
+	 * @param  Widget  $widget form field widget object
 	 * @param  string  $formId form id
 	 * @param  array   $data   form data
-	 * @param  \Form   $form   form object
-	 * @return \Widget
+	 * @param  Form    $form   form object
+	 * @return Widget
 	 */
 	public function loadFormField($widget, $formId, $data, $form)
 	{
@@ -36,7 +40,7 @@ class Antispam
 				'tableless' => $widget->tableless,
 			));
 
-			if (\Input::post('FORM_SUBMIT') == $formId) {
+			if (Input::post('FORM_SUBMIT') == $formId) {
 				$antispamField->validate();
 			}
 			if (! $antispamField->hasErrors()) {

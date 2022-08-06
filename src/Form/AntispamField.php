@@ -8,12 +8,18 @@
 
 namespace MadeYourDay\RockSolidAntispam\Form;
 
+use Contao\Database;
+use Contao\Input;
+use Contao\StringUtil;
+use Contao\System;
+use Contao\Widget;
+
 /**
  * Antispam field
  *
  * @author Martin Auswöger <martin@madeyourday.net>
  */
-class AntispamField extends \Widget
+class AntispamField extends Widget
 {
 	/**
 	 * @var string template
@@ -53,7 +59,7 @@ class AntispamField extends \Widget
 		$this->names[2] = static::getRandomString();
 		$this->values[2] = static::getRandomString();
 
-		$fields = \Database::getInstance()
+		$fields = Database::getInstance()
 			->prepare("SELECT name FROM tl_form_field WHERE pid = ?")
 			->execute($this->pid);
 
@@ -83,14 +89,14 @@ class AntispamField extends \Widget
 	 */
 	public function validate()
 	{
-		$session = \System::getContainer()->get('session')->getBag('contao_frontend');
+		$session = System::getContainer()->get('session')->getBag('contao_frontend');
 		$sessionData = $session->get('rocksolid_antispam_' . $this->strId);
 
 		if (
 			! is_array($sessionData) ||
-			\Input::post($sessionData['names'][0]) !== $sessionData['values'][0] ||
-			\Input::post($sessionData['names'][1]) !== $sessionData['values'][1] ||
-			\Input::post($sessionData['names'][2]) !== $sessionData['values'][2] ||
+			Input::post($sessionData['names'][0]) !== $sessionData['values'][0] ||
+			Input::post($sessionData['names'][1]) !== $sessionData['values'][1] ||
+			Input::post($sessionData['names'][2]) !== $sessionData['values'][2] ||
 			$sessionData['time'] > (time() - 3)
 		) {
 			$this->addError('failed');
@@ -123,7 +129,7 @@ class AntispamField extends \Widget
 			$this->names[0],
 			'ctrl_' . $this->strId,
 			trim('rsas-field ' . $this->strClass),
-			\StringUtil::specialchars($this->values[0]),
+			StringUtil::specialchars($this->values[0]),
 			$this->getAttributes(),
 			$this->strTagEnding
 		);
@@ -139,7 +145,7 @@ class AntispamField extends \Widget
 			$this->names[1],
 			'ctrl_' . $this->strId . '_2',
 			trim('rsas-field ' . $this->strClass),
-			\StringUtil::specialchars($this->values[1]),
+			StringUtil::specialchars($this->values[1]),
 			$this->getAttributes(),
 			$this->strTagEnding
 		);
@@ -156,7 +162,7 @@ class AntispamField extends \Widget
 			$this->values[2],
 			'ctrl_' . $this->strId . '_3',
 			trim('rsas-field ' . $this->strClass),
-			\StringUtil::specialchars($this->names[2]),
+			StringUtil::specialchars($this->names[2]),
 			$this->getAttributes(),
 			$this->strTagEnding
 		);
@@ -175,7 +181,7 @@ class AntispamField extends \Widget
 	 */
 	protected function setSessionData()
 	{
-		\System::getContainer()
+		System::getContainer()
 			->get('session')
 			->getBag('contao_frontend')
 			->set('rocksolid_antispam_' . $this->strId, array(

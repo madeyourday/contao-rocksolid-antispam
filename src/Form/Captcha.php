@@ -8,12 +8,14 @@
 
 namespace MadeYourDay\RockSolidAntispam\Form;
 
+use Contao\FormCaptcha;
+
 /**
  * Captcha field
  *
  * @author Martin Auswöger <martin@madeyourday.net>
  */
-class Captcha extends \FormCaptcha
+class Captcha extends FormCaptcha
 {
 	public function __get($key)
 	{
