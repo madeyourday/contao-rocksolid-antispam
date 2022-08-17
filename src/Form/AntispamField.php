@@ -89,7 +89,7 @@ class AntispamField extends Widget
 	 */
 	public function validate()
 	{
-		$session = System::getContainer()->get('session')->getBag('contao_frontend');
+		$session = System::getContainer()->get('request_stack')->getSession()->getBag('contao_frontend');
 		$sessionData = $session->get('rocksolid_antispam_' . $this->strId);
 
 		if (
@@ -182,7 +182,7 @@ class AntispamField extends Widget
 	protected function setSessionData()
 	{
 		System::getContainer()
-			->get('session')
+			->get('request_stack')->getSession()
 			->getBag('contao_frontend')
 			->set('rocksolid_antispam_' . $this->strId, array(
 				'names' => $this->names,
