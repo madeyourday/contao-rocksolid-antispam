@@ -181,9 +181,16 @@ class AntispamField extends Widget
 	 */
 	protected function setSessionData()
 	{
-		System::getContainer()
-			->get('request_stack')->getSession()
-			->getBag('contao_frontend')
+		try {
+			$sessionBag = System::getContainer()
+				->get('request_stack')
+				->getSession()
+				->getBag('contao_frontend');
+		} catch (\Throwable) {
+			return;
+		}
+
+		$sessionBag
 			->set('rocksolid_antispam_' . $this->strId, array(
 				'names' => $this->names,
 				'values' => $this->values,
