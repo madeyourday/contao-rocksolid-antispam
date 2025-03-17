@@ -186,7 +186,7 @@ class AntispamField extends Widget
 				->get('request_stack')
 				->getSession()
 				->getBag('contao_frontend');
-		} catch (\Throwable) {
+		} catch (\Throwable $e) {
 			return;
 		}
 
