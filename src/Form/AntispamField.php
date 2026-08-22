@@ -42,6 +42,12 @@ class AntispamField extends Widget
 	protected $values = array();
 
 	/**
+	 * Backwards compatibility
+	 * @var string
+	 */
+	protected $strTagEnding = '>';
+
+	/**
 	 * constructor
 	 *
 	 * @param array|null $attributes
@@ -112,7 +118,15 @@ class AntispamField extends Widget
 	public function generateLabel()
 	{
 		$this->strLabel = $GLOBALS['TL_LANG']['FFL']['rocksolid_antispam']['label'];
-		return parent::generateLabel();
+
+		return \sprintf(
+			'<label%s%s>%s%s%s</label>',
+			$this->blnForAttribute ? ' for="ctrl_' . $this->strId . '"' : '',
+			$this->strClass ? ' class="' . StringUtil::specialchars($this->strClass) . '"' : '',
+			$this->mandatory ? '<span class="invisible">' . $GLOBALS['TL_LANG']['MSC']['mandatory'] . ' </span>' : '',
+			StringUtil::specialchars($this->strLabel),
+			$this->mandatory ? '<span class="mandatory">*</span>' : ''
+		);
 	}
 
 	/**
@@ -126,9 +140,9 @@ class AntispamField extends Widget
 
 		$html = sprintf(
 			'<input type="text" name="%s" id="%s" class="%s" value="%s"%s%s',
-			$this->names[0],
+			StringUtil::specialchars($this->names[0]),
 			'ctrl_' . $this->strId,
-			trim('rsas-field ' . $this->strClass),
+			StringUtil::specialchars(trim('rsas-field ' . $this->strClass)),
 			StringUtil::specialchars($this->values[0]),
 			$this->getAttributes(),
 			$this->strTagEnding
@@ -142,9 +156,9 @@ class AntispamField extends Widget
 
 		$html .= sprintf(
 			'<input type="text" name="%s" id="%s" class="%s" value="%s"%s%s',
-			$this->names[1],
+			StringUtil::specialchars($this->names[1]),
 			'ctrl_' . $this->strId . '_2',
-			trim('rsas-field ' . $this->strClass),
+			StringUtil::specialchars(trim('rsas-field ' . $this->strClass)),
 			StringUtil::specialchars($this->values[1]),
 			$this->getAttributes(),
 			$this->strTagEnding
@@ -159,9 +173,9 @@ class AntispamField extends Widget
 		// swap field name and value (javascript swaps it back in the frontend)
 		$html .= sprintf(
 			'<input type="text" name="%s" id="%s" class="%s" value="%s"%s%s',
-			$this->values[2],
+			StringUtil::specialchars($this->values[2]),
 			'ctrl_' . $this->strId . '_3',
-			trim('rsas-field ' . $this->strClass),
+			StringUtil::specialchars(trim('rsas-field ' . $this->strClass)),
 			StringUtil::specialchars($this->names[2]),
 			$this->getAttributes(),
 			$this->strTagEnding
